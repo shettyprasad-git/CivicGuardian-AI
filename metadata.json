@@ -1,0 +1,10 @@
+{
+  "name": "CivicGuardian AI",
+  "description": "An AI-powered platform for citizens to report, verify, track, and resolve community issues.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
