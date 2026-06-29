@@ -273,273 +273,344 @@ export const ReportIssue = () => {
 
   return (
     <div className="w-full bg-[#F8FAFC] pb-12">
-      <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-12 py-6 md:py-12">
-        <motion.div layout className="flex flex-col justify-center">
+      <div className="max-w-[1500px] mx-auto w-full px-4 sm:px-6 min-[1200px]:px-12 py-6 md:py-12">
+        <div className="w-full min-[1200px]:grid min-[1200px]:grid-cols-[minmax(680px,1fr)_460px] min-[1200px]:gap-8 min-[1200px]:items-start flex flex-col gap-6">
           
-          <motion.div layout className="mb-8 md:mb-12 text-center md:text-left">
-            <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight">Report Issue</h1>
-            <p className="font-bold text-gray-500 mt-2">AI-Powered Civic Reporting</p>
-          </motion.div>
+          {/* LEFT COLUMN */}
+          <div className="flex flex-col gap-6 w-full">
+            <div className="mb-2 text-center md:text-left">
+              <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight">Report Issue</h1>
+              <p className="font-bold text-gray-500 mt-2">AI-Powered Civic Reporting</p>
+            </div>
 
-          <div className="flex items-center justify-center w-full">
-            <motion.div 
-              layout 
-              className="w-full flex flex-col gap-6 max-w-3xl mx-auto transition-all duration-700 ease-in-out items-center"
-            >
-              
-              {/* Image Upload */}
-              <motion.div layout className="w-full space-y-6 flex flex-col">
-                <Card className="p-6 overflow-hidden relative">
-                  <AnimatePresence mode="wait">
-                    {!image ? (
-                      <motion.div 
-                        key="upload-empty"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => fileInputRef.current?.click()}
-                        className="brutal-border border-dashed bg-[#F8FAFC] rounded-xl p-12 md:p-24 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors group min-h-[300px]"
-                      >
-                        <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform brutal-border">
-                          <ImagePlus size={36} className="text-primary" />
-                        </div>
-                        <h3 className="font-black text-xl md:text-2xl mb-2 text-center">Upload Evidence</h3>
-                        <p className="font-bold text-gray-500 text-center max-w-xs">Upload a photo to begin AI analysis.</p>
-                        <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
-                      </motion.div>
-                    ) : (
-                      <motion.div 
-                        key="upload-preview"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="relative group"
-                      >
-                        <img src={image} alt="Upload" className="w-full h-[300px] md:h-[400px] object-cover brutal-border rounded-xl" />
-                        <button 
-                          onClick={resetFlow}
-                          className="absolute -top-3 -right-3 bg-accent text-white p-2 md:p-3 brutal-border rounded-full brutal-shadow-sm hover:scale-110 transition-transform z-10"
-                        >
-                          <X size={20} />
-                        </button>
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center pointer-events-none">
-                          <Button variant="primary" className="pointer-events-auto" onClick={() => fileInputRef.current?.click()}>
-                            <RefreshCw size={16} className="mr-2" /> Replace Photo
-                          </Button>
-                        </div>
-                        <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </Card>
-                
-                <AnimatePresence>
-                  {image && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20, height: 0 }}
-                      animate={{ opacity: 1, y: 0, height: 'auto' }}
-                      exit={{ opacity: 0, y: 20, height: 0 }}
-                      className="overflow-hidden"
-                    >
-                      <Card className="p-4 md:p-6">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
-                          <h2 className="text-lg md:text-xl font-black flex items-center gap-2">
-                            <MapPin size={20} /> Location
-                          </h2>
-                          {!location && (
-                            <Button onClick={getLocation} size="sm" variant="outline">
-                              Capture Location
-                            </Button>
-                          )}
-                        </div>
-                        
-                        {location ? (
-                          <div className="p-4 bg-success/20 border-2 border-black rounded-xl font-bold flex flex-col space-y-2">
-                            <div className="flex items-center space-x-3">
-                              <CheckCircle2 size={24} className="text-success shrink-0" />
-                              <span className="text-sm md:text-base break-all">
-                                {locality ? locality.formatted : `Verified (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`}
-                              </span>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="p-4 bg-gray-100 border-2 border-black rounded-xl font-bold text-gray-500 text-sm">
-                            Location required for submission.
-                          </div>
-                        )}
-                      </Card>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* AI Analysis & Actions */}
+            {/* Image Upload Card */}
+            <Card className="p-6 overflow-hidden relative">
               <AnimatePresence mode="wait">
-                {image && (
-                  <motion.div
-                    key="right-panel"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
-                    className="w-full flex flex-col gap-6"
+                {!image ? (
+                  <motion.div 
+                    key="upload-empty"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => fileInputRef.current?.click()}
+                    className="brutal-border border-dashed bg-[#F8FAFC] rounded-xl p-12 md:p-24 flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors group min-h-[300px]"
                   >
-                    
-                    {/* Analyzing State */}
-                    {isAnalyzing && (
-                      <Card className="bg-[#111827] text-white p-8 md:p-12 flex flex-col items-center justify-center text-center min-h-[400px]">
-                        <motion.div 
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                          className="mb-8 relative"
-                        >
-                          <div className="w-20 h-20 border-4 border-t-primary border-r-secondary border-b-accent border-l-white rounded-full"></div>
-                          <Sparkles size={24} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white" />
-                        </motion.div>
-                        <h2 className="text-2xl md:text-3xl font-black uppercase tracking-widest mb-4">Analyzing with Gemini</h2>
-                        <div className="w-full max-w-xs space-y-3">
-                          <div className="h-3 bg-gray-800 rounded animate-pulse w-full"></div>
-                          <div className="h-3 bg-gray-800 rounded animate-pulse w-5/6 mx-auto"></div>
-                          <div className="h-3 bg-gray-800 rounded animate-pulse w-4/6 mx-auto"></div>
-                        </div>
-                      </Card>
-                    )}
-
-                        {analysisError && !isAnalyzing && (
-                          <Card className="bg-white p-8 md:p-12 flex flex-col items-center justify-center text-center min-h-[400px] border-4 border-accent">
-                            <AlertCircle size={64} className="text-accent mb-6" />
-                            <h2 className="text-2xl font-black mb-2 uppercase">Unable to analyze the image</h2>
-                            <div className="font-bold text-gray-600 mb-8 text-left max-w-sm w-full">
-                              <p className="mb-2">Possible reasons:</p>
-                              <ul className="list-disc pl-5 space-y-1">
-                                <li>API quota exceeded</li>
-                                <li>Network error</li>
-                                <li>Invalid API key</li>
-                              </ul>
-                            </div>
-                            <Button variant="accent" size="lg" onClick={retryAnalysis}>
-                              <RefreshCw size={20} className="mr-2" /> Retry Analysis
-                            </Button>
-                          </Card>
-                        )}
-
-                    {/* Result State */}
-                    {analysis && !isAnalyzing && !analysisError && (
-                      <motion.div 
-                        initial="hidden"
-                        animate="visible"
-                        variants={{
-                          visible: { transition: { staggerChildren: 0.1 } }
-                        }}
-                        className="bg-white brutal-border rounded-2xl brutal-shadow-lg overflow-hidden flex flex-col"
-                      >
-                        <div className="bg-black text-white p-4 md:p-5 flex items-center space-x-3 shrink-0">
-                          <Sparkles size={24} className="text-primary" />
-                          <h2 className="font-black text-lg md:text-xl uppercase tracking-widest">AI Report</h2>
-                        </div>
-                        
-                        <div className="p-4 md:p-6 space-y-6 flex-1">
-                          
-                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-                            <motion.div variants={itemVariants} className="p-3 md:p-4 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
-                              <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Category</p>
-                              <p className="font-black text-sm md:text-base leading-tight line-clamp-2">{analysis.category}</p>
-                            </motion.div>
-                            <motion.div variants={itemVariants} className="p-3 md:p-4 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
-                              <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Confidence</p>
-                              <p className="font-black text-sm md:text-base leading-tight text-secondary">{analysis.confidence}</p>
-                            </motion.div>
-                            <motion.div variants={itemVariants} className="p-3 md:p-4 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
-                              <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Department</p>
-                              <p className="font-black text-sm md:text-base leading-tight line-clamp-2">{analysis.department || 'General'}</p>
-                            </motion.div>
-                            <motion.div variants={itemVariants} className="p-3 md:p-4 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
-                              <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Est. Resolution</p>
-                              <p className="font-black text-sm md:text-base leading-tight text-accent">{analysis.estimatedResolutionTime || 'Unknown'}</p>
-                            </motion.div>
-                          </div>
-                            
-                          <motion.div variants={itemVariants} className="p-3 md:p-4 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
-                            <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">AI Priority Score</p>
-                            <div className="flex flex-col">
-                              <div className="flex items-center gap-3">
-                                <p className="font-black text-3xl md:text-4xl text-primary leading-none">{analysis.priorityScore !== undefined ? analysis.priorityScore : (analysis.severityScore !== undefined ? analysis.severityScore : 'N/A')}<span className="text-xl md:text-2xl text-gray-400">/10</span></p>
-                                <p className={`font-black text-sm md:text-base leading-tight px-3 py-1 rounded border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
-                                  analysis.severity === 'High' || analysis.severity === 'Critical' ? 'bg-accent text-white' : 
-                                  analysis.severity === 'Medium' ? 'bg-warning text-black' : 'bg-success text-black'
-                                }`}>{analysis.severity}</p>
-                              </div>
-                              {(analysis.reasoning || analysis.severityReason) && (
-                                <div className="mt-3 bg-white p-3 border-2 border-black/10 rounded-lg">
-                                  <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-gray-800 font-bold">
-                                    {(analysis.reasoning || analysis.severityReason || '').split(/\. /).filter(p => p.trim()).map((point, idx) => (
-                                      <li key={idx}>{point.trim()}{point.endsWith('.') ? '' : '.'}</li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                            </div>
-                          </motion.div>
-                          
-                          <motion.div variants={itemVariants} className="space-y-2">
-                            <label className="font-black text-sm uppercase tracking-wider text-slate-700">Description (Editable)</label>
-                            <textarea 
-                              value={description}
-                              onChange={(e) => setDescription(e.target.value)}
-                              className="w-full p-3 md:p-4 border-2 border-black rounded-xl focus:outline-none focus:ring-4 focus:ring-primary bg-slate-50 font-bold text-sm md:text-base resize-none transition-shadow"
-                              rows={4}
-                            />
-                          </motion.div>
-
-                          <motion.div variants={itemVariants} className="p-4 md:p-5 bg-primary/10 border-2 border-black rounded-xl relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-full blur-3xl opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
-                            <h4 className="font-black uppercase text-sm mb-2 text-slate-800">Action Plan</h4>
-                            <p className="font-bold text-sm md:text-base mb-4 leading-relaxed">{analysis.recommendedAction}</p>
-                            <div className="flex flex-wrap items-center gap-2">
-                              <Badge variant="primary" className="text-xs">Routing to</Badge>
-                              <span className="font-black text-sm">{analysis.department}</span>
-                            </div>
-                          </motion.div>
-
-                          {auth.currentUser && !auth.currentUser.isAnonymous && (
-                            <motion.div variants={itemVariants} className="flex items-center space-x-3 bg-slate-50 p-3 rounded-lg border-2 border-transparent hover:border-slate-200 transition-colors">
-                              <input 
-                                type="checkbox" 
-                                id="emailNotif" 
-                                checked={useEmail} 
-                                onChange={(e) => setUseEmail(e.target.checked)}
-                                className="w-5 h-5 border-2 border-black rounded appearance-none checked:bg-black cursor-pointer relative after:content-[''] after:absolute after:top-[2px] after:left-[6px] after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-white after:rotate-45 after:opacity-0 checked:after:opacity-100 transition-all" 
-                              />
-                              <label htmlFor="emailNotif" className="font-bold text-sm cursor-pointer select-none flex-1 flex items-center gap-2">
-                                <Mail size={16} className="text-slate-500" />
-                                Email me updates on this issue
-                              </label>
-                            </motion.div>
-                          )}
-                        </div>
-
-                        <div className="p-4 md:p-6 bg-slate-50 border-t-2 border-black shrink-0">
-                          <Button 
-                            variant="success"
-                            onClick={checkDuplicateAndSubmit}
-                            disabled={isSubmitting || !location}
-                            className="w-full py-4 md:py-6 text-lg md:text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
-                          >
-                            {isSubmitting ? (
-                              <><Loader2 size={24} className="animate-spin mr-3" /> Submitting...</>
-                            ) : (
-                              <><Send size={24} className="mr-3" /> Submit Official Report</>
-                            )}
-                          </Button>
-                        </div>
-                      </motion.div>
-                    )}
+                    <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform brutal-border">
+                      <ImagePlus size={36} className="text-primary" />
+                    </div>
+                    <h3 className="font-black text-xl md:text-2xl mb-2 text-center">Upload Evidence</h3>
+                    <p className="font-bold text-gray-500 text-center max-w-xs">Upload a photo to begin AI analysis.</p>
+                    <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="upload-preview"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="relative group"
+                  >
+                    <img src={image} alt="Upload" className="w-full h-[300px] md:h-[400px] object-cover brutal-border rounded-xl" />
+                    <button 
+                      onClick={resetFlow}
+                      className="absolute -top-3 -right-3 bg-accent text-white p-2 md:p-3 brutal-border rounded-full brutal-shadow-sm hover:scale-110 transition-transform z-10"
+                    >
+                      <X size={20} />
+                    </button>
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center pointer-events-none">
+                      <Button variant="primary" className="pointer-events-auto" onClick={() => fileInputRef.current?.click()}>
+                        <RefreshCw size={16} className="mr-2" /> Replace Photo
+                      </Button>
+                    </div>
+                    <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageUpload} />
                   </motion.div>
                 )}
               </AnimatePresence>
+            </Card>
 
-            </motion.div>
+            {/* Location Card (Always visible to prevent column jump/shift) */}
+            <Card className="p-4 md:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <h2 className="text-lg md:text-xl font-black flex items-center gap-2">
+                  <MapPin size={20} /> Location
+                </h2>
+                {!location && (
+                  <Button onClick={getLocation} size="sm" variant="outline">
+                    Capture Location
+                  </Button>
+                )}
+              </div>
+              
+              {location ? (
+                <div className="p-4 bg-success/20 border-2 border-black rounded-xl font-bold flex flex-col space-y-2">
+                  <div className="flex items-center space-x-3">
+                    <CheckCircle2 size={24} className="text-success shrink-0" />
+                    <span className="text-sm md:text-base break-all">
+                      {locality ? locality.formatted : `Verified (${location.lat.toFixed(4)}, ${location.lng.toFixed(4)})`}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 bg-gray-100 border-2 border-black rounded-xl font-bold text-gray-500 text-sm">
+                  Location required for submission.
+                </div>
+              )}
+            </Card>
           </div>
-        </motion.div>
+
+          {/* RIGHT COLUMN (Sticky AI Report Panel) */}
+          <div className="w-full min-[1200px]:sticky min-[1200px]:top-[100px] flex flex-col gap-6">
+            <AnimatePresence mode="wait">
+              {!image ? (
+                <motion.div
+                  key="placeholder"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white brutal-border rounded-2xl brutal-shadow-lg overflow-hidden flex flex-col min-h-[500px]"
+                >
+                  <div className="bg-black text-white p-4 md:p-5 flex items-center space-x-3 shrink-0">
+                    <Sparkles size={24} className="text-primary" />
+                    <h2 className="font-black text-lg md:text-xl uppercase tracking-widest">AI Report</h2>
+                  </div>
+                  <div className="p-6 flex-1 flex flex-col items-center justify-center text-center gap-6">
+                    <div className="w-24 h-24 bg-slate-100 rounded-full border-4 border-black border-dashed flex items-center justify-center animate-pulse">
+                      <Sparkles size={40} className="text-gray-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-xl uppercase mb-2">AI report will appear here</h3>
+                      <p className="font-bold text-sm text-gray-500 max-w-xs">
+                        Upload an image to begin analysis of the civic issue and route it to the correct department automatically.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="p-4 md:p-6 bg-slate-50 border-t-2 border-black shrink-0">
+                    <Button 
+                      variant="success"
+                      disabled={true}
+                      className="w-full py-4 md:py-6 text-lg md:text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] opacity-50 cursor-not-allowed"
+                    >
+                      <Send size={24} className="mr-3" /> Submit Official Report
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : isAnalyzing ? (
+                <motion.div
+                  key="loading"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white brutal-border rounded-2xl brutal-shadow-lg overflow-hidden flex flex-col min-h-[500px]"
+                >
+                  <div className="bg-black text-white p-4 md:p-5 flex items-center space-x-3 shrink-0">
+                    <Sparkles size={24} className="text-primary animate-spin" style={{ animationDuration: '3s' }} />
+                    <h2 className="font-black text-lg md:text-xl uppercase tracking-widest">Analyzing with Gemini</h2>
+                  </div>
+                  
+                  <div className="p-4 md:p-6 space-y-6 flex-1">
+                    {/* 4 grid items skeleton */}
+                    <div className="grid grid-cols-2 gap-3 md:gap-4">
+                      {[1, 2, 3, 4].map(i => (
+                        <div key={i} className="p-3 border-2 border-black rounded-xl bg-slate-50 animate-pulse h-16 flex flex-col justify-between">
+                          <div className="h-2 bg-slate-200 rounded w-1/2"></div>
+                          <div className="h-4 bg-slate-300 rounded w-5/6"></div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {/* Priority Score Box skeleton */}
+                    <div className="p-4 border-2 border-black rounded-xl bg-slate-50 animate-pulse space-y-3">
+                      <div className="h-3 bg-slate-200 rounded w-1/4"></div>
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 bg-slate-300 rounded w-20"></div>
+                        <div className="h-8 bg-slate-300 rounded w-16"></div>
+                      </div>
+                      <div className="h-12 bg-slate-200 rounded w-full"></div>
+                    </div>
+
+                    {/* Description skeleton */}
+                    <div className="space-y-2 animate-pulse">
+                      <div className="h-3 bg-slate-200 rounded w-1/3"></div>
+                      <div className="space-y-1.5">
+                        <div className="h-4 bg-slate-300 rounded w-full"></div>
+                        <div className="h-4 bg-slate-300 rounded w-11/12"></div>
+                        <div className="h-4 bg-slate-300 rounded w-4/5"></div>
+                      </div>
+                    </div>
+
+                    {/* Action Plan skeleton */}
+                    <div className="p-4 bg-primary/5 border-2 border-black rounded-xl animate-pulse space-y-3">
+                      <div className="h-3 bg-slate-200 rounded w-1/4"></div>
+                      <div className="h-4 bg-slate-300 rounded w-full"></div>
+                      <div className="h-4 bg-slate-300 rounded w-5/6"></div>
+                    </div>
+                  </div>
+
+                  <div className="p-4 md:p-6 bg-slate-50 border-t-2 border-black shrink-0">
+                    <Button 
+                      variant="success"
+                      disabled={true}
+                      className="w-full py-4 md:py-6 text-lg md:text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] opacity-50 cursor-not-allowed"
+                    >
+                      <Loader2 size={24} className="animate-spin mr-3" /> Analyzing...
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : analysisError ? (
+                <motion.div
+                  key="error"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white brutal-border rounded-2xl brutal-shadow-lg overflow-hidden flex flex-col min-h-[500px]"
+                >
+                  <div className="bg-black text-white p-4 md:p-5 flex items-center space-x-3 shrink-0">
+                    <Sparkles size={24} className="text-primary" />
+                    <h2 className="font-black text-lg md:text-xl uppercase tracking-widest">AI Report</h2>
+                  </div>
+                  
+                  <div className="p-6 flex-1 flex flex-col items-center justify-center text-center gap-6">
+                    <div className="w-16 h-16 bg-red-100 p-3 rounded-full border-4 border-black flex items-center justify-center">
+                      <AlertCircle size={32} className="text-accent" />
+                    </div>
+                    <div>
+                      <h3 className="font-black text-xl uppercase mb-2">Analysis Failed</h3>
+                      <p className="font-bold text-sm text-gray-500 max-w-xs mb-4">
+                        {analysisError || "Unable to analyze image. Please try again."}
+                      </p>
+                      <Button variant="accent" size="sm" onClick={retryAnalysis} className="font-black">
+                        <RefreshCw size={14} className="mr-2 animate-spin-hover" /> Retry Analysis
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="p-4 md:p-6 bg-slate-50 border-t-2 border-black shrink-0">
+                    <Button 
+                      variant="success"
+                      disabled={true}
+                      className="w-full py-4 md:py-6 text-lg md:text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] opacity-50 cursor-not-allowed"
+                    >
+                      <Send size={24} className="mr-3" /> Submit Official Report
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : analysis ? (
+                <motion.div
+                  key="analysis-result"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  transition={{ duration: 0.3 }}
+                  className="bg-white brutal-border rounded-2xl brutal-shadow-lg overflow-hidden flex flex-col"
+                >
+                  <div className="bg-black text-white p-4 md:p-5 flex items-center space-x-3 shrink-0">
+                    <Sparkles size={24} className="text-primary" />
+                    <h2 className="font-black text-lg md:text-xl uppercase tracking-widest">AI Report</h2>
+                  </div>
+                  
+                  <div className="p-4 md:p-6 space-y-6 flex-1">
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
+                        <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Category</p>
+                        <p className="font-black text-sm md:text-base leading-tight line-clamp-2">{analysis.category}</p>
+                      </div>
+                      <div className="p-3 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
+                        <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Confidence</p>
+                        <p className="font-black text-sm md:text-base leading-tight text-secondary">{analysis.confidence}%</p>
+                      </div>
+                      <div className="p-3 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
+                        <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Department</p>
+                        <p className="font-black text-sm md:text-base leading-tight line-clamp-2">{analysis.department || 'General'}</p>
+                      </div>
+                      <div className="p-3 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
+                        <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Est. Resolution</p>
+                        <p className="font-black text-sm md:text-base leading-tight text-accent">{analysis.estimatedResolutionTime || 'Unknown'}</p>
+                      </div>
+                    </div>
+                      
+                    <div className="p-3 md:p-4 border-2 border-black rounded-xl bg-slate-50 flex flex-col justify-center">
+                      <p className="text-[10px] md:text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">AI Priority Score</p>
+                      <div className="flex flex-col">
+                        <div className="flex items-center gap-3">
+                          <p className="font-black text-3xl md:text-4xl text-primary leading-none">{analysis.priorityScore !== undefined ? analysis.priorityScore : (analysis.severityScore !== undefined ? analysis.severityScore : 'N/A')}<span className="text-xl md:text-2xl text-gray-400">/10</span></p>
+                          <p className={`font-black text-sm md:text-base leading-tight px-3 py-1 rounded border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
+                            analysis.severity === 'High' || analysis.severity === 'Critical' ? 'bg-accent text-white' : 
+                            analysis.severity === 'Medium' ? 'bg-warning text-black' : 'bg-success text-black'
+                          }`}>{analysis.severity}</p>
+                        </div>
+                        {(analysis.reasoning || analysis.severityReason) && (
+                          <div className="mt-3 bg-white p-3 border-2 border-black/10 rounded-lg">
+                            <ul className="list-disc pl-5 space-y-1 text-xs md:text-sm text-gray-800 font-bold">
+                              {(analysis.reasoning || analysis.severityReason || '').split(/\. /).filter((p: string) => p.trim()).map((point: string, idx: number) => (
+                                <li key={idx}>{point.trim()}{point.endsWith('.') ? '' : '.'}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <label className="font-black text-sm uppercase tracking-wider text-slate-700">Description (Editable)</label>
+                      <textarea 
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="w-full p-3 md:p-4 border-2 border-black rounded-xl focus:outline-none focus:ring-4 focus:ring-primary bg-slate-50 font-bold text-sm md:text-base resize-none transition-shadow"
+                        rows={4}
+                      />
+                    </div>
+
+                    <div className="p-4 md:p-5 bg-primary/10 border-2 border-black rounded-xl relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-primary rounded-full blur-3xl opacity-20 -mr-16 -mt-16 pointer-events-none"></div>
+                      <h4 className="font-black uppercase text-sm mb-2 text-slate-800">Action Plan</h4>
+                      <p className="font-bold text-sm md:text-base mb-4 leading-relaxed">{analysis.recommendedAction}</p>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <Badge variant="primary" className="text-xs">Routing to</Badge>
+                        <span className="font-black text-sm">{analysis.department}</span>
+                      </div>
+                    </div>
+
+                    {auth.currentUser && !auth.currentUser.isAnonymous && (
+                      <div className="flex items-center space-x-3 bg-slate-50 p-3 rounded-lg border-2 border-transparent hover:border-slate-200 transition-colors">
+                        <input 
+                          type="checkbox" 
+                          id="emailNotif" 
+                          checked={useEmail} 
+                          onChange={(e) => setUseEmail(e.target.checked)}
+                          className="w-5 h-5 border-2 border-black rounded appearance-none checked:bg-black cursor-pointer relative after:content-[''] after:absolute after:top-[2px] after:left-[6px] after:w-1.5 after:h-2.5 after:border-r-2 after:border-b-2 after:border-white after:rotate-45 after:opacity-0 checked:after:opacity-100 transition-all" 
+                        />
+                        <label htmlFor="emailNotif" className="font-bold text-sm cursor-pointer select-none flex-1 flex items-center gap-2">
+                          <Mail size={16} className="text-slate-500" />
+                          Email me updates on this issue
+                        </label>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="p-4 md:p-6 bg-slate-50 border-t-2 border-black shrink-0">
+                    <Button 
+                      variant="success"
+                      onClick={checkDuplicateAndSubmit}
+                      disabled={isSubmitting || !location}
+                      className="w-full py-4 md:py-6 text-lg md:text-xl shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                    >
+                      {isSubmitting ? (
+                        <><Loader2 size={24} className="animate-spin mr-3" /> Submitting...</>
+                      ) : (
+                        <><Send size={24} className="mr-3" /> Submit Official Report</>
+                      )}
+                    </Button>
+                  </div>
+                </motion.div>
+              ) : null}
+            </AnimatePresence>
+          </div>
+
+        </div>
       </div>
 
       <AnimatePresence>
